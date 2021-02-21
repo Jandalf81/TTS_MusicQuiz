@@ -1,22 +1,21 @@
-function loadSongpackFromURL(url)
+function Songpack_loadFromURL(url)
     broadcastToAll('Reading Songpack, please wait...')
 
     WebRequest.get(url, function (webReturn)
-            log(webReturn.text)
+            --log(webReturn.text)
             local json = JSON.decode(webReturn.text)
             songpack = json
         end)
 
-    Wait.condition(loadSongpackFromURL_Success, loadSongpackFromURL_isReady, 10, loadSongpackFromURL_Timeout)
+    Wait.condition(Songpack_loadFromURL_Success, Songpack_loadFromURL_isReady, 10, Songpack_loadFromURL_Timeout)
 end
 
-function loadSongpackFromURL_Success()
+function Songpack_loadFromURL_Success()
     broadcastToAll('Songpack read successfully')
     broadcastToAll('Welcome to ' .. songpack.settings.name)
-    log(songpack)
 end
 
-function loadSongpackFromURL_isReady()
+function Songpack_loadFromURL_isReady()
     if (songpack == nil) then
         return false
     else
@@ -24,6 +23,6 @@ function loadSongpackFromURL_isReady()
     end
 end
 
-function loadSongpackFromURL_Timeout()
+function Songpack_loadFromURL_Timeout()
     broadcastToAll('Reading Songpack timed out!')
 end

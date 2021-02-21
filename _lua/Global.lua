@@ -107,7 +107,7 @@ end
 
 function readSettingsDEBUG()
     -- readSettings('https://www.dropbox.com/s/dhhxbigv2yht6nl/_settings.json?dl=1')
-    loadSongpackFromURL('https://www.dropbox.com/s/65nibcmdmb1h9ck/_songpack.json?dl=1')
+    Songpack_loadFromURL('https://www.dropbox.com/s/65nibcmdmb1h9ck/_songpack.json?dl=1')
 end
 
 function PlayTrack1()
@@ -120,4 +120,8 @@ end
 
 function PlayTrack3()
     playSong(songs[3])
+end
+
+function Memory_placeTile()
+    Memory_spawnTiles(3, 2)
 end
