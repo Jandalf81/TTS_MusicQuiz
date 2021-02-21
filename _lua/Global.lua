@@ -4,6 +4,8 @@ function onLoad()
     settings = nil
     songs = nil
 
+    songpack = nil
+
     --readTextfileFromDropbox('dhhxbigv2yht6nl/_settings.txt')
     --readFromGoogleSheet('1QJ_m8eYJLbDKLeSmEkdQZ8WJbEVuFAj6iVCIElMZy3E', 'songs')
 
@@ -104,7 +106,8 @@ function logSettings()
 end
 
 function readSettingsDEBUG()
-    readSettings('https://www.dropbox.com/s/dhhxbigv2yht6nl/_settings.json?dl=1')
+    -- readSettings('https://www.dropbox.com/s/dhhxbigv2yht6nl/_settings.json?dl=1')
+    loadSongpackFromURL('https://www.dropbox.com/s/65nibcmdmb1h9ck/_songpack.json?dl=1')
 end
 
 function PlayTrack1()
