@@ -123,5 +123,5 @@ function PlayTrack3()
 end
 
 function Memory_placeTile()
-    Memory_spawnTiles(3, 2)
+    Memory_spawnTiles(4, 3)
 end

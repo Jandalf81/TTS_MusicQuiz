@@ -7,7 +7,22 @@ function Memory_spawnTiles(numX, numZ)
     offsetX = 3
     offsetZ = 3
 
+    -- initiate math.random
     math.randomseed(os.time())
+    for i = 1, 20, 1 do
+        math.random(1, 10)
+    end
+
+    -- fill a table with indexes of songpack.memory.pool
+    poolIndex = {}
+
+    for i = 1, #songpack.memory.pool, 1 do
+        -- every index needs to be added twice, because... pairs
+        table.insert(poolIndex, i)
+        table.insert(poolIndex, i)
+    end
+
+    log(poolIndex)
 
     -- for each tile horizontally...
     for x = 0, numX - 1, 1 do
@@ -50,8 +65,17 @@ function Memory_spawnTiles(numX, numZ)
             }
             newObj.createButton(btn_Play)
 
-            -- TODO: Insert a random number of 1 to (#songpack.memory.pool) here. Each number must be given exactly twice
-            newObj.setGMNotes(math.random(1, 3))
+            -- insert a random number of 1 to (#songpack.memory.pool) here. Each number must be given exactly twice
+            randIndex = math.random(1, #poolIndex)
+
+            -- log('Tile at coords ' .. x .. ' / ' .. z)
+            -- log(poolIndex)
+            -- log('#poolIndex: ' .. #poolIndex)
+            -- log('RandIndex: ' .. randIndex)
+            -- log('Setting index ' .. poolIndex[randIndex])
+
+            newObj.setGMNotes(poolIndex[randIndex])
+            table.remove(poolIndex, randIndex)
         end
     end 
 end
@@ -71,19 +95,40 @@ function Memory_playSong(obj)
         -- second guess
         Memory_secondGuess = obj
 
-        -- compare the guesses
-        if (Memory_firstGuess.getGMNotes() == Memory_secondGuess.getGMNotes()) then
-           log('Treffer') 
-           Memory_firstGuess.editButton({index = 0, color = {0, 1, 0}})
-           Memory_secondGuess.editButton({index = 0, color = {0, 1, 0}})
-        else
-            log('Daneben')
-            Memory_firstGuess.editButton({index = 0, color = {1, 1, 1}})
-            Memory_secondGuess.editButton({index = 0, color = {1, 1, 1}})
-        end
-
-        -- reset the guesses
-        Memory_firstGuess = nil
-        Memory_secondGuess = nil
+        -- wait for the current song to finish
+        --Wait.condition(Memory_playSong_Finished, Memory_playSong_isFinished, 30, Memory_playSong_Timeout)
+        Wait.time(Memory_playSong_Finished, songpack.memory.length)
     end
+end
+
+function Memory_playSong_Finished()
+     -- compare the guesses
+     if (Memory_firstGuess.getGMNotes() == Memory_secondGuess.getGMNotes()) then
+        -- TODO: give player a point
+        broadcastToAll('Treffer') 
+        -- Memory_firstGuess.editButton({index = 0, color = {0, 1, 0}})
+        -- Memory_secondGuess.editButton({index = 0, color = {0, 1, 0}})
+        destroyObject(Memory_firstGuess)
+        destroyObject(Memory_secondGuess)
+    else
+        broadcastToAll('Daneben')
+        Memory_firstGuess.editButton({index = 0, color = {1, 1, 1}})
+        Memory_secondGuess.editButton({index = 0, color = {1, 1, 1}})
+    end
+
+    -- reset the guesses
+    Memory_firstGuess = nil
+    Memory_secondGuess = nil
+end
+
+function Memory_playSong_isFinished()
+    if (MusicPlayer.player_status == 'Play') then
+        return false
+    else
+        return true
+    end
+end
+
+function Memory_playSong_Timeout()
+    log('Memory_playSong_Timeout')
 end

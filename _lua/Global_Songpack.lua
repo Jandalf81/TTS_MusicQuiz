@@ -13,6 +13,7 @@ end
 function Songpack_loadFromURL_Success()
     broadcastToAll('Songpack read successfully')
     broadcastToAll('Welcome to ' .. songpack.settings.name)
+    --log(songpack)
 end
 
 function Songpack_loadFromURL_isReady()
