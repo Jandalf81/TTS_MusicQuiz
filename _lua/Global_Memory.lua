@@ -1,3 +1,54 @@
+function Memory_drawField(numX, numZ)
+    -- set the upper left point where the tiles will be placed
+    startPosX = 0
+    startPosZ = 0
+
+    -- set the offset between tiles
+    offsetX = 3
+    offsetZ = 3
+
+    -- compute the coordinates of the 4 corners
+    local fieldTopLeft = {x = (startPosX - (offsetX / 2)), y = 1, z = (startPosZ + (offsetZ / 2))}
+    local fieldTopRight = {x = (startPosX + (offsetX * (numX - 1)) + (offsetX / 2)), y = 1, z = (startPosZ + (offsetZ / 2))}
+    local fieldBottomLeft = {x = (startPosX - (offsetX / 2)), y = 1, z = (startPosZ - (offsetZ * (numZ - 1)) - (offsetZ / 2))}
+    local fieldBottomRight = {x = (startPosX + (offsetX * (numX - 1)) + (offsetX / 2)), y = 1, z = (startPosZ - (offsetZ * (numZ - 1)) - (offsetZ / 2))}
+
+    local color = {1, 1, 1}
+    local thickness = 0.2
+    local rotation = {0, 0, 0}
+
+    -- TODO: move the code to draw lines and rectangles to functions
+
+    -- draw the lines
+    Global.setVectorLines({
+        {
+            points = {fieldTopLeft, fieldTopRight},
+            color = color,
+            thickness = thickness,
+            rotation = rotation
+        },
+        {
+            points = {fieldTopLeft, fieldBottomLeft},
+            color = color,
+            thickness = thickness,
+            rotation = rotation
+        },
+        {
+            points = {fieldBottomLeft, fieldBottomRight},
+            color = color,
+            thickness = thickness,
+            rotation = rotation
+        },
+        {
+            points = {fieldBottomRight, fieldTopRight},
+            color = color,
+            thickness = thickness,
+            rotation = rotation
+        }
+    })
+end
+
+
 function Memory_spawnTiles(numX, numZ)
     -- set the upper left point where the tiles will be placed
     startPosX = 0
@@ -14,7 +65,7 @@ function Memory_spawnTiles(numX, numZ)
     end
 
     -- fill a table with indexes of songpack.memory.pool
-    poolIndex = {}
+    local poolIndex = {}
 
     for i = 1, #songpack.memory.pool, 1 do
         -- every index needs to be added twice, because... pairs
@@ -82,7 +133,7 @@ end
 
 function Memory_playSong(obj)
     -- play the song with the objects associated number from songpack.memory.pool
-    playSong(songpack.memory.pool[tonumber(obj.getGMNotes())])
+    MusicPlayer_play(songpack.memory.pool[tonumber(obj.getGMNotes())])
 
     -- change the button to orange
     obj.editButton({index = 0, color = {1, 1, 0}})
@@ -95,13 +146,17 @@ function Memory_playSong(obj)
         -- second guess
         Memory_secondGuess = obj
 
-        -- wait for the current song to finish
-        --Wait.condition(Memory_playSong_Finished, Memory_playSong_isFinished, 30, Memory_playSong_Timeout)
-        Wait.time(Memory_playSong_Finished, songpack.memory.length)
+        -- wait for the current song to start playing, then wait for the Music Player to stop playing
+        Wait.condition(Memory_playSong_Started, MusicPlayer_isPlaying, 30, Memory_playSong_Timeout)
     end
 end
 
-function Memory_playSong_Finished()
+function Memory_playSong_Started()
+    -- wait for the Music Player to stop playing, then compare the guesses
+    Wait.condition(Memory_playSong_showResult, MusicPlayer_isStopped, 30, Memory_playSong_Timeout)
+end
+
+function Memory_playSong_showResult()
      -- compare the guesses
      if (Memory_firstGuess.getGMNotes() == Memory_secondGuess.getGMNotes()) then
         -- TODO: give player a point
@@ -121,13 +176,6 @@ function Memory_playSong_Finished()
     Memory_secondGuess = nil
 end
 
-function Memory_playSong_isFinished()
-    if (MusicPlayer.player_status == 'Play') then
-        return false
-    else
-        return true
-    end
-end
 
 function Memory_playSong_Timeout()
     log('Memory_playSong_Timeout')
