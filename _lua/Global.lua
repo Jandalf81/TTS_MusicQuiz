@@ -1,6 +1,8 @@
 function onLoad()
     log('mod loaded')
 
+    loadLangStrings()
+
     settings = nil
     songs = nil
 
@@ -25,73 +27,10 @@ function readFromGoogleSheet(key, sheet)
     end)
 end
 
--- -- Reads the main settings file
--- -- Waits for the reading to finish, then executes readSettings_Finished
--- function readSettings(url)
---     broadcastToAll('Reading Settings, please wait...')
 
---     -- Condition function for WAIT
---     local settingsReady = function() 
---             if (settings == nil) then
---                 return false
---             else
---                 return true
---             end
---         end
-
---     -- function to run upon timeout of WAIT
---     local settingsTimeout = function()
---             broadcastToAll('Reading Settings timed out!')
---         end
-
---     -- this is the function which will need to be waited for
---     WebRequest.get(url, function(webReturn)
---             local json = JSON.decode(webReturn.text)
---             settings = json
---         end)
-
---     Wait.condition(readSettings_Finished, settingsReady, 5, settingsTimeout)
--- end
-
--- -- is being executed when readSettings is finished
--- function readSettings_Finished() 
---     broadcastToAll('Settings read successfully')
---     broadcastToAll('Welcome to ' .. settings.name)
-
---     readSongs(settings.songList)
--- end
-
-
--- -- Reads the songlist from the settings into TTS
--- -- Waits for the reading to be finished, then executes readSongs_Finished
--- function readSongs(url)
---     broadcastToAll('Reading Songs, please wait...')
-
---     local songsReady = function()
---             if (songs == nil) then
---                 return false
---             else
---                return true 
---             end
---         end
-
---     local songsTimeout = function()
---             broadcastToAll('Reading Songs timed out!')
---         end
-
---     WebRequest.get(url, function(webReturn)
---             --log(webReturn.text)
---             local json = JSON.decode(webReturn.text)
---             songs = json
---         end)
-
---     Wait.condition(readSongs_Finished, songsReady, 5, songsTimeout)
--- end
-
--- -- Is being executed when readSongs is finished
--- function readSongs_Finished()
---     broadcastToAll('Read ' .. #songs .. ' Songs successfully')
--- end
+function none()
+    -- used to temporarily remove the click_function from buttons
+end
 
 
 -- DEBUG FUNCTIONS

@@ -1,5 +1,5 @@
 function Songpack_loadFromURL(url)
-    broadcastToAll('Reading Songpack, please wait...')
+    broadcastToAll(LANG_READINGSONGPACK_WAIT)
 
     WebRequest.get(url, function (webReturn)
             --log(webReturn.text)
@@ -11,8 +11,8 @@ function Songpack_loadFromURL(url)
 end
 
 function Songpack_loadFromURL_Success()
-    broadcastToAll('Songpack read successfully')
-    broadcastToAll('Welcome to ' .. songpack.settings.name)
+    broadcastToAll(LANG_READINGSONGPACK_SUCCESS)
+    broadcastToAll(LANG_READINGSONGPACK_WELCOME .. songpack.settings.name)
     --log(songpack)
 end
 
@@ -25,5 +25,5 @@ function Songpack_loadFromURL_isReady()
 end
 
 function Songpack_loadFromURL_Timeout()
-    broadcastToAll('Reading Songpack timed out!')
+    broadcastToAll(LANG_READINGSONGPACK_TIMEOUT)
 end
