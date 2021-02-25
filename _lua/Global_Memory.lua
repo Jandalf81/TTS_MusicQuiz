@@ -9,43 +9,19 @@ function Memory_drawField(numX, numZ)
 
     -- compute the coordinates of the 4 corners
     local fieldTopLeft = {x = (startPosX - (offsetX / 2)), y = 1, z = (startPosZ + (offsetZ / 2))}
-    local fieldTopRight = {x = (startPosX + (offsetX * (numX - 1)) + (offsetX / 2)), y = 1, z = (startPosZ + (offsetZ / 2))}
-    local fieldBottomLeft = {x = (startPosX - (offsetX / 2)), y = 1, z = (startPosZ - (offsetZ * (numZ - 1)) - (offsetZ / 2))}
+    --local fieldTopRight = {x = (startPosX + (offsetX * (numX - 1)) + (offsetX / 2)), y = 1, z = (startPosZ + (offsetZ / 2))}
+    --local fieldBottomLeft = {x = (startPosX - (offsetX / 2)), y = 1, z = (startPosZ - (offsetZ * (numZ - 1)) - (offsetZ / 2))}
     local fieldBottomRight = {x = (startPosX + (offsetX * (numX - 1)) + (offsetX / 2)), y = 1, z = (startPosZ - (offsetZ * (numZ - 1)) - (offsetZ / 2))}
 
     local color = {1, 1, 1}
     local thickness = 0.2
     local rotation = {0, 0, 0}
 
-    -- TODO: move the code to draw lines and rectangles to functions
+    -- draw a rectangle around the playing field
+    drawRectangle(fieldTopLeft, fieldBottomRight, color, thickness, rotation)
 
-    -- draw the lines
-    Global.setVectorLines({
-        {
-            points = {fieldTopLeft, fieldTopRight},
-            color = color,
-            thickness = thickness,
-            rotation = rotation
-        },
-        {
-            points = {fieldTopLeft, fieldBottomLeft},
-            color = color,
-            thickness = thickness,
-            rotation = rotation
-        },
-        {
-            points = {fieldBottomLeft, fieldBottomRight},
-            color = color,
-            thickness = thickness,
-            rotation = rotation
-        },
-        {
-            points = {fieldBottomRight, fieldTopRight},
-            color = color,
-            thickness = thickness,
-            rotation = rotation
-        }
-    })
+    -- TODO: draw rectangles around the players' score zones
+    drawRectangle({x = 4, y = 1, z = 4}, {x = 5, y = 1, z = 5}, {r= 1, g = 0, b= 0}, 0.2, {x = 0, y = 0, z = 0})
 end
 
 
