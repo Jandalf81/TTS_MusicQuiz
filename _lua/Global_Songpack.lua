@@ -12,7 +12,10 @@ end
 
 function Songpack_loadFromURL_Success()
     broadcastToAll(LANG_READINGSONGPACK_SUCCESS)
-    broadcastToAll(LANG_READINGSONGPACK_WELCOME .. songpack.settings.name)
+
+    local LANG_READINGSONGPACK_WELCOME_repl
+    LANG_READINGSONGPACK_WELCOME_repl = string.gsub(string.gsub(LANG_READINGSONGPACK_WELCOME, '!songpack!', songpack.name), '!creator!', songpack.creator)
+    broadcastToAll(LANG_READINGSONGPACK_WELCOME_repl)
     --log(songpack)
 end
 
