@@ -40,3 +40,11 @@ function drawRectangle(topLeft, bottomRight, color, thickness, rotation)
 
     Global.setVectorLines(vectorLines)
 end
+
+function isOdd(num)
+    if (num % 2 == 1) then
+        return true
+    end
+        
+    return false
+end

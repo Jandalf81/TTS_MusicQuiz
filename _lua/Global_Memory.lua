@@ -43,21 +43,72 @@ function Memory_spawnTiles(numX, numZ)
         math.random(1, 10)
     end
 
-    -- fill a table with indexes of songpack.memory.pool
-    local poolIndex = {}
+    -- compute needed pairs
+    local pairsNeeded = 0
 
-    for i = 1, #songpack.memory.pool, 1 do
-        -- every index needs to be added twice, because... pairs
-        table.insert(poolIndex, i)
-        table.insert(poolIndex, i)
+    if(isOdd(numX * numZ)) then
+        pairsNeeded = ((numX * numZ) - 1) / 2
+    else
+        pairsNeeded = (numX * numZ) / 2
+    end
+    log('pairsNeeded: ' .. pairsNeeded)
+
+    if (pairsNeeded > #songpack.memory.pool) then
+        local LANG_MEMORY_POOLTOOSMALL_repl
+        LANG_MEMORY_POOLTOOSMALL_repl = string.gsub(LANG_MEMORY_POOLTOOSMALL, '<poolentries>', #songpack.memory.pool)
+        broadcastToAll(LANG_MEMORY_POOLTOOSMALL_repl)
+
+        broadcastToAll()
+        return
     end
 
-    -- log(poolIndex)
+    -- remove random songs from pool if pool exceeds needed pairs
+    local poolIndexes = {}
+
+    -- add all indexes of songpack.memory.pool into poolIndexes
+    for i, _ in ipairs(songpack.memory.pool) do
+        table.insert(poolIndexes, i)
+    end
+
+    -- remove random entries from poolIndexes until it has as many entries left as pairs are needed
+    while (#poolIndexes > pairsNeeded) do
+        table.remove(poolIndexes, math.random(1, #poolIndexes))
+    end
+    log(poolIndexes)
+
+    -- fill a table with pairs of indexes of songpack.memory.pool
+    local poolOfPairs = {}
+
+    for _, v in ipairs(poolIndexes) do
+        -- every index needs to be added twice, because... pairs
+        table.insert(poolOfPairs, v)
+        table.insert(poolOfPairs, v)
+    end
+    log(poolOfPairs)
+
+    local skipTile = nil
+
+    -- check if both sides are odd
+    if (isOdd(numX) and isOdd(numZ)) then
+        log('ODD')
+        -- compute the tile to skip
+        skipTile = {
+            ["x"] = (numX - 1) / 2,
+            ["z"] = (numZ - 1) / 2
+        }
+    end
 
     -- for each tile horizontally...
     for x = 0, numX - 1, 1 do
         -- for each tile vertically...
         for z = 0, numZ - 1, 1 do
+            --skip the current tile if skipTile is set
+            if (skipTile ~= nil) then
+                if (skipTile.x == x and skipTile.z == z) then
+                    goto continue
+                end
+            end
+
             -- compute the new Position by startPos +- (index * offset)
             newPos = {x = startPosX + (x * offsetX), y = 1, z = startPosZ - (z * offsetZ)}
 
@@ -96,20 +147,22 @@ function Memory_spawnTiles(numX, numZ)
             newObj.createButton(btn_Play)
 
             -- insert a random number of 1 to (#songpack.memory.pool) here. Each number must be given exactly twice
-            randIndex = math.random(1, #poolIndex)
+            randIndex = math.random(1, #poolOfPairs)
 
             -- log('Tile at coords ' .. x .. ' / ' .. z)
-            -- log(poolIndex)
-            -- log('#poolIndex: ' .. #poolIndex)
+            -- log(poolOfPairs)
+            -- log('#poolOfPairs: ' .. #poolOfPairs)
             -- log('RandIndex: ' .. randIndex)
-            -- log('Setting index ' .. poolIndex[randIndex])
+            -- log('Setting index ' .. poolOfPairs[randIndex])
 
-            newObj.setGMNotes(poolIndex[randIndex])
-            newObj.editButton({index = 0, label = 'Play\n' .. poolIndex[randIndex]})
+            newObj.setGMNotes(poolOfPairs[randIndex])
+            newObj.editButton({index = 0, label = 'Play\n' .. poolOfPairs[randIndex]})
 
-            table.remove(poolIndex, randIndex)
+            table.remove(poolOfPairs, randIndex)
 
             table.insert(MemoryTiles, newObj)
+
+            ::continue::
         end
     end 
     log(MemoryTiles)
@@ -175,14 +228,14 @@ function Memory_playSong_showResult()
      if (Memory_firstGuess.getGMNotes() == Memory_secondGuess.getGMNotes()) then
         -- TODO: give player a point
         -- TODO: play success sound
-        broadcastToAll(LANG_HIT)
+        broadcastToAll(LANG_MEMORY_HIT)
 
         Memory_firstGuess.editButton({index = 0, color = {r = 0, g = 1, b = 0}})
         Memory_secondGuess.editButton({index = 0, color = {r = 0, g = 1, b = 0}})
 
         Wait.time(Memory_playSong_guessCorrect, 1)
     else
-        broadcastToAll(LANG_MISS)
+        broadcastToAll(LANG_MEMORY_MISS)
         -- TODO: play error sound
         Memory_firstGuess.editButton({index = 0, color = {r = 1, g = 0, b = 0}})
         Memory_secondGuess.editButton({index = 0, color = {r = 1, g = 0, b = 0}})
