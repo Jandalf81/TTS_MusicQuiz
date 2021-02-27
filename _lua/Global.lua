@@ -56,6 +56,5 @@ function PlayTrack3()
 end
 
 function Memory_placeTile()
-    Memory_drawField(4, 3)
-    Memory_spawnTiles(4, 3)
+    Memory_preparePlayingField(3, 3)
 end

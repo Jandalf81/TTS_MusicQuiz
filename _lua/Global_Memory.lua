@@ -1,3 +1,27 @@
+function Memory_preparePlayingField(numX, numZ)
+    -- compute needed pairs
+    local pairsNeeded = 0
+
+    if(isOdd(numX * numZ)) then
+        pairsNeeded = ((numX * numZ) - 1) / 2
+    else
+        pairsNeeded = (numX * numZ) / 2
+    end
+    log('pairsNeeded: ' .. pairsNeeded)
+
+    if (pairsNeeded > #songpack.memory.pool) then
+        local LANG_MEMORY_POOLTOOSMALL_repl
+        LANG_MEMORY_POOLTOOSMALL_repl = string.gsub(LANG_MEMORY_POOLTOOSMALL, '<poolentries>', #songpack.memory.pool)
+        broadcastToAll(LANG_MEMORY_POOLTOOSMALL_repl)
+
+        broadcastToAll()
+        return
+    end
+
+    Memory_drawField(numX, numZ)
+    Memory_spawnTiles(numX, numZ)
+end
+
 function Memory_drawField(numX, numZ)
     -- set the upper left point where the tiles will be placed
     startPosX = 0
@@ -50,16 +74,6 @@ function Memory_spawnTiles(numX, numZ)
         pairsNeeded = ((numX * numZ) - 1) / 2
     else
         pairsNeeded = (numX * numZ) / 2
-    end
-    log('pairsNeeded: ' .. pairsNeeded)
-
-    if (pairsNeeded > #songpack.memory.pool) then
-        local LANG_MEMORY_POOLTOOSMALL_repl
-        LANG_MEMORY_POOLTOOSMALL_repl = string.gsub(LANG_MEMORY_POOLTOOSMALL, '<poolentries>', #songpack.memory.pool)
-        broadcastToAll(LANG_MEMORY_POOLTOOSMALL_repl)
-
-        broadcastToAll()
-        return
     end
 
     -- remove random songs from pool if pool exceeds needed pairs
