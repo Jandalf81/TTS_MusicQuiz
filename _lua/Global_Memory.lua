@@ -242,14 +242,15 @@ function Memory_playSong_showResult()
      if (Memory_firstGuess.getGMNotes() == Memory_secondGuess.getGMNotes()) then
         -- TODO: give player a point
         -- TODO: play success sound
-        broadcastToAll(LANG_MEMORY_HIT)
+        MusicPlayer_announceSong(songpack.memory.pool[tonumber(Memory_firstGuess.getGMNotes())])
+        broadcastToAll(LANG_MEMORY_HIT, {r = 0, g = 1, b = 0})
 
         Memory_firstGuess.editButton({index = 0, color = {r = 0, g = 1, b = 0}})
         Memory_secondGuess.editButton({index = 0, color = {r = 0, g = 1, b = 0}})
 
         Wait.time(Memory_playSong_guessCorrect, 1)
     else
-        broadcastToAll(LANG_MEMORY_MISS)
+        broadcastToAll(LANG_MEMORY_MISS, {r = 1, g = 0, b = 0})
         -- TODO: play error sound
         Memory_firstGuess.editButton({index = 0, color = {r = 1, g = 0, b = 0}})
         Memory_secondGuess.editButton({index = 0, color = {r = 1, g = 0, b = 0}})

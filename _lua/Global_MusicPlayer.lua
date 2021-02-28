@@ -1,5 +1,5 @@
 function MusicPlayer_play(song)
-    MusicPlayer.setCurrentAudioclip(song)
+    MusicPlayer.setCurrentAudioclip({title = song.title, url = song.url})
     MusicPlayer.play()
 end
 
@@ -19,4 +19,10 @@ function MusicPlayer_isStopped()
     else
         return true
     end
+end
+
+function MusicPlayer_announceSong(song)
+    local LANG_MUSICPLAYER_ANNOUNCE_repl
+    LANG_MUSICPLAYER_ANNOUNCE_repl = string.gsub(string.gsub(string.gsub(LANG_MUSICPLAYER_ANNOUNCE, '<track>', song.track), '<album>', song.album), '<artist>', song.artist)
+    broadcastToAll(LANG_MUSICPLAYER_ANNOUNCE_repl)
 end

@@ -16,9 +16,13 @@ function loadLangStrings()
         '{en}Songpack read successfully' ..
         '{de}Songpack erfolgreich eingelesen'
     LANG_READINGSONGPACK_WELCOME = 
-        '{en}Welcome to \'!songpack!\' by !creator!' ..
-        '{de}Willkommen zu \'!songpack!\' von !creator!'
+        '{en}Welcome to \'<songpack>\' by <creator>' ..
+        '{de}Willkommen zu \'<songpack>\' von <creator>'
     LANG_READINGSONGPACK_TIMEOUT = 
         '{en}Reading Songpack timed out!' ..
         '{de}Lesen des Songpacks dauerte zu lange!'
+
+    LANG_MUSICPLAYER_ANNOUNCE =
+        '{en}That was <track> by <artist> from the album <album>' ..
+        '{de}Das war <track> von <artist> aus dem Album <album>'
 end
