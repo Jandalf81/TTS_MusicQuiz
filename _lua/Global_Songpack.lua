@@ -12,12 +12,11 @@ end
 
 function Songpack_loadFromURL_Success()
     broadcastToAll(LANG_READINGSONGPACK_SUCCESS, {r = 0, g = 1, b = 0})
-    broadcastToAll('Hallo Welt', {r = 0, g = 1, b = 0})
 
     local LANG_READINGSONGPACK_WELCOME_repl
     LANG_READINGSONGPACK_WELCOME_repl = string.gsub(string.gsub(LANG_READINGSONGPACK_WELCOME, '<songpack>', songpack.name), '<creator>', songpack.creator)
     broadcastToAll(LANG_READINGSONGPACK_WELCOME_repl)
-    log(songpack)
+    -- log(songpack)
 end
 
 function Songpack_loadFromURL_isReady()

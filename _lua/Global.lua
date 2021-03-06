@@ -3,10 +3,17 @@ function onLoad()
 
     loadLangStrings()
 
-    settings = nil
-    songs = nil
-
+-- global vars
     songpack = nil
+
+-- global vars for MEMORY
+    -- set the upper left point where the tiles will be placed
+    startPosX = -20
+    startPosZ = 8
+
+    -- set the offset between tiles
+    offsetX = 3
+    offsetZ = 3
 
     --readTextfileFromDropbox('dhhxbigv2yht6nl/_settings.txt')
     --readFromGoogleSheet('1QJ_m8eYJLbDKLeSmEkdQZ8WJbEVuFAj6iVCIElMZy3E', 'songs')

@@ -7,7 +7,7 @@ function Memory_preparePlayingField(numX, numZ)
     else
         pairsNeeded = (numX * numZ) / 2
     end
-    log('pairsNeeded: ' .. pairsNeeded)
+    -- log('pairsNeeded: ' .. pairsNeeded)
 
     if (pairsNeeded > #songpack.memory.pool) then
         local LANG_MEMORY_POOLTOOSMALL_repl
@@ -23,14 +23,6 @@ function Memory_preparePlayingField(numX, numZ)
 end
 
 function Memory_drawField(numX, numZ)
-    -- set the upper left point where the tiles will be placed
-    startPosX = 0
-    startPosZ = 0
-
-    -- set the offset between tiles
-    offsetX = 3
-    offsetZ = 3
-
     -- compute the coordinates of the 4 corners
     local fieldTopLeft = {x = (startPosX - (offsetX / 2)), y = 1, z = (startPosZ + (offsetZ / 2))}
     --local fieldTopRight = {x = (startPosX + (offsetX * (numX - 1)) + (offsetX / 2)), y = 1, z = (startPosZ + (offsetZ / 2))}
@@ -44,20 +36,44 @@ function Memory_drawField(numX, numZ)
     -- draw a rectangle around the playing field
     drawRectangle(fieldTopLeft, fieldBottomRight, color, thickness, rotation)
 
-    -- TODO: draw rectangles around the players' score zones
-    drawRectangle({x = 4, y = 1, z = 4}, {x = 5, y = 1, z = 5}, {r= 1, g = 0, b= 0}, 0.2, {x = 0, y = 0, z = 0})
+    -- draw rectangles around the players' score zones
+    Memory_ScoreZones = {}
+    
+    local players = Player.getPlayers()
+    for i, p in ipairs(players) do
+        log(p.steam_name)
+        if (p.seated == true) then
+            local position = {
+                x = startPosX + ((i - 1) * offsetX * 2),
+                y = 1,
+                z = startPosZ + (offsetZ * 2)
+            }
+
+            table.insert(Memory_ScoreZones, {name = p.steam_name, color = p.color, position = position})
+
+            drawRectangle(Vector(position) - Vector((offsetX / 2), 0, (offsetZ / 2)), Vector(position) + Vector((offsetX / 2), 0, (offsetZ / 2)), p.color, 0.2, {0, 0, 0})
+            local text = spawnObject({
+                position = {
+                    x = position.x,
+                    y = position.y,
+                    z = position.z + (offsetZ)
+                },
+                rotation = {
+                    x = 90,
+                    y = 0,
+                    z = 0
+                },
+                type = '3DText'
+            })
+            text.TextTool.setValue(p.steam_name)
+            text.TextTool.setFontColor(p.color)
+        end
+    end
+    log(Memory_ScoreZones)
 end
 
 
 function Memory_spawnTiles(numX, numZ)
-    -- set the upper left point where the tiles will be placed
-    startPosX = 0
-    startPosZ = 0
-
-    -- set the offset between tiles
-    offsetX = 3
-    offsetZ = 3
-
     -- create table for all tiles
     MemoryTiles = {}
 
@@ -88,7 +104,7 @@ function Memory_spawnTiles(numX, numZ)
     while (#poolIndexes > pairsNeeded) do
         table.remove(poolIndexes, math.random(1, #poolIndexes))
     end
-    log(poolIndexes)
+    -- log(poolIndexes)
 
     -- fill a table with pairs of indexes of songpack.memory.pool
     local poolOfPairs = {}
@@ -98,13 +114,13 @@ function Memory_spawnTiles(numX, numZ)
         table.insert(poolOfPairs, v)
         table.insert(poolOfPairs, v)
     end
-    log(poolOfPairs)
+    -- log(poolOfPairs)
 
     local skipTile = nil
 
     -- check if both sides are odd
     if (isOdd(numX) and isOdd(numZ)) then
-        log('ODD')
+        -- log('ODD')
         -- compute the tile to skip
         skipTile = {
             ["x"] = (numX - 1) / 2,
@@ -179,7 +195,7 @@ function Memory_spawnTiles(numX, numZ)
             ::continue::
         end
     end 
-    log(MemoryTiles)
+    -- log(MemoryTiles)
 end
 
 function Memory_playSong(obj)
