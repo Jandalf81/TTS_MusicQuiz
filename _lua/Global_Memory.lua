@@ -14,7 +14,6 @@ function Memory_preparePlayingField(numX, numZ)
         LANG_MEMORY_POOLTOOSMALL_repl = string.gsub(LANG_MEMORY_POOLTOOSMALL, '<poolentries>', #songpack.memory.pool)
         broadcastToAll(LANG_MEMORY_POOLTOOSMALL_repl)
 
-        broadcastToAll()
         return
     end
 
@@ -260,7 +259,7 @@ function Memory_playSong_showResult(color)
         -- TODO: give player a point
         -- TODO: play success sound
         MusicPlayer_announceSong(songpack.memory.pool[tonumber(Memory_firstGuess.getGMNotes())])
-        broadcastToAll(LANG_MEMORY_HIT, {r = 0, g = 1, b = 0})
+        broadcastToAll(LANG_MEMORY_HIT)
         log(color)
 
         Memory_firstGuess.editButton({index = 0, color = {r = 0, g = 1, b = 0}})
@@ -268,7 +267,7 @@ function Memory_playSong_showResult(color)
 
         Wait.time(function() Memory_playSong_guessCorrect(color) end, 1)
     else
-        broadcastToAll(LANG_MEMORY_MISS, {r = 1, g = 0, b = 0})
+        broadcastToAll(LANG_MEMORY_MISS)
         -- TODO: play error sound
         Memory_firstGuess.editButton({index = 0, color = {r = 1, g = 0, b = 0}})
         Memory_secondGuess.editButton({index = 0, color = {r = 1, g = 0, b = 0}})
