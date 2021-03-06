@@ -49,7 +49,8 @@ function Memory_drawField(numX, numZ)
                 z = startPosZ + (offsetZ * 2)
             }
 
-            table.insert(Memory_ScoreZones, {name = p.steam_name, color = p.color, position = position})
+            -- table.insert(Memory_ScoreZones, {[p.color] = {name = p.steam_name, color = p.color, position = position}})
+            Memory_ScoreZones[p.color] = {name = p.steam_name, position = position}
 
             drawRectangle(Vector(position) - Vector((offsetX / 2), 0, (offsetZ / 2)), Vector(position) + Vector((offsetX / 2), 0, (offsetZ / 2)), p.color, 0.2, {0, 0, 0})
             local text = spawnObject({
@@ -198,7 +199,7 @@ function Memory_spawnTiles(numX, numZ)
     -- log(MemoryTiles)
 end
 
-function Memory_playSong(obj)
+function Memory_playSong(obj, color)
     -- play the song with the objects associated number from songpack.memory.pool
     MusicPlayer_play(songpack.memory.pool[tonumber(obj.getGMNotes())])
 
@@ -230,7 +231,7 @@ function Memory_playSong(obj)
         end
 
         -- wait for the current song to start playing, then wait for the Music Player to stop playing
-        Wait.condition(Memory_playSong_Started_Second, MusicPlayer_isPlaying, 30, Memory_playSong_Timeout)
+        Wait.condition(function() Memory_playSong_Started_Second(color) end, MusicPlayer_isPlaying, 30, Memory_playSong_Timeout)
     end
 end
 
@@ -248,23 +249,24 @@ function Memory_playSong_resetOtherButtons()
     end
 end
 
-function Memory_playSong_Started_Second()
+function Memory_playSong_Started_Second(color)
     -- wait for the Music Player to stop playing, then compare the guesses
-    Wait.condition(Memory_playSong_showResult, MusicPlayer_isStopped, 30, Memory_playSong_Timeout)
+    Wait.condition(function() Memory_playSong_showResult(color) end, MusicPlayer_isStopped, 30, Memory_playSong_Timeout)
 end
 
-function Memory_playSong_showResult()
+function Memory_playSong_showResult(color)
      -- compare the guesses
      if (Memory_firstGuess.getGMNotes() == Memory_secondGuess.getGMNotes()) then
         -- TODO: give player a point
         -- TODO: play success sound
         MusicPlayer_announceSong(songpack.memory.pool[tonumber(Memory_firstGuess.getGMNotes())])
         broadcastToAll(LANG_MEMORY_HIT, {r = 0, g = 1, b = 0})
+        log(color)
 
         Memory_firstGuess.editButton({index = 0, color = {r = 0, g = 1, b = 0}})
         Memory_secondGuess.editButton({index = 0, color = {r = 0, g = 1, b = 0}})
 
-        Wait.time(Memory_playSong_guessCorrect, 1)
+        Wait.time(function() Memory_playSong_guessCorrect(color) end, 1)
     else
         broadcastToAll(LANG_MEMORY_MISS, {r = 1, g = 0, b = 0})
         -- TODO: play error sound
@@ -275,7 +277,7 @@ function Memory_playSong_showResult()
     end
 end
 
-function Memory_playSong_guessCorrect()
+function Memory_playSong_guessCorrect(color)
     -- remove tiles from table
     for i, tile in ipairs(MemoryTiles) do
         if (tile.getGUID() == Memory_firstGuess.getGUID()) then
@@ -291,9 +293,10 @@ function Memory_playSong_guessCorrect()
         end
     end
 
-    -- TODO: move to player's score zone
-    destroyObject(Memory_firstGuess)
-    destroyObject(Memory_secondGuess)
+    -- move to player's score zone
+    Memory_firstGuess.setPositionSmooth(Memory_ScoreZones[color].position, false, true)
+    Memory_secondGuess.setPositionSmooth(Memory_ScoreZones[color].position, false, true)
+
 
     Memory_playSong_resetAllButtons()
 end
