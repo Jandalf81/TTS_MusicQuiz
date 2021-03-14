@@ -15,6 +15,8 @@ function onLoad()
     offsetX = 3
     offsetZ = 3
 
+    round = 0
+
     --readTextfileFromDropbox('dhhxbigv2yht6nl/_settings.txt')
     --readFromGoogleSheet('1QJ_m8eYJLbDKLeSmEkdQZ8WJbEVuFAj6iVCIElMZy3E', 'songs')
 
@@ -64,4 +66,8 @@ end
 
 function Memory_placeTile()
     Memory_preparePlayingField(3, 3)
+end
+
+function newRound()
+    Scorecard_nextRound('Memory')
 end

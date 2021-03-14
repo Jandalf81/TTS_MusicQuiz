@@ -40,7 +40,7 @@ function Memory_drawField(numX, numZ)
     
     local players = Player.getPlayers()
     for i, p in ipairs(players) do
-        log(p.steam_name)
+        -- log(p.steam_name)
         if (p.seated == true) then
             local position = {
                 x = startPosX + ((i - 1) * offsetX * 2),
@@ -69,7 +69,7 @@ function Memory_drawField(numX, numZ)
             text.TextTool.setFontColor(p.color)
         end
     end
-    log(Memory_ScoreZones)
+    -- log(Memory_ScoreZones)
 end
 
 
@@ -204,6 +204,7 @@ function Memory_playSong(obj, color)
 
     -- change the button to orange
     obj.editButton({index = 0, color = {r = 1, g = 1, b = 0}, click_function = 'none'})
+    obj.highlightOn(color, 300)
 
     -- save the guesses
     if (Memory_firstGuess == nil) then
@@ -256,7 +257,10 @@ end
 function Memory_playSong_showResult(color)
      -- compare the guesses
      if (Memory_firstGuess.getGMNotes() == Memory_secondGuess.getGMNotes()) then
-        -- TODO: give player a point
+
+        -- give player a point
+        Scorecard_update(color, 1)
+        
         -- TODO: play success sound
         MusicPlayer_announceSong(songpack.memory.pool[tonumber(Memory_firstGuess.getGMNotes())])
         broadcastToAll(LANG_MEMORY_HIT)
@@ -307,6 +311,9 @@ function Memory_playSong_resetAllButtons()
     end
 
     -- reset the guesses
+    Memory_firstGuess.highlightOff()
+    Memory_secondGuess.highlightOff()
+
     Memory_firstGuess = nil
     Memory_secondGuess = nil
 end

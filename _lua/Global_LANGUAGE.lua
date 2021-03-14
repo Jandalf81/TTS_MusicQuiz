@@ -1,4 +1,5 @@
 function loadLangStrings()
+    -- https://kb.tabletopsimulator.com/player-guides/bb-codes/
     local bbOk = '[00FF00]'
     local bbWarning = '[FFFF00]'
     local bbError = '[FF0000]'
