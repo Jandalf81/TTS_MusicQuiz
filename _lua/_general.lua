@@ -48,3 +48,33 @@ function isOdd(num)
         
     return false
 end
+
+function getObjectsFromPosition()
+    local position = {x = 0, y = 2, z = 0}
+    local range = 3
+    local type = 'Tile'
+
+    local params = {
+        type = 3,
+        origin = position,
+        direction = {0, -1, 0},
+        size = {x = range, y = range, z = range},
+        max_distance = 0,
+        debug = true
+    }
+
+    local hitlist = Physics.cast(params)
+
+    log('Hitlist')
+    log(hitlist)
+
+    local retList = {}
+    for _, result in ipairs(hitlist) do
+        log(result.hit_object.type)
+        if (result.hit_object.type == type) then
+            table.insert(retList, result.hit_object)
+        end
+    end
+
+    log(retList)
+end

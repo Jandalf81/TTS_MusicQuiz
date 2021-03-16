@@ -41,7 +41,7 @@ function Memory_drawField(numX, numZ)
     local players = Player.getPlayers()
     for i, p in ipairs(players) do
         -- log(p.steam_name)
-        if (p.seated == true) then
+        if (p.seated == true and p.color ~= 'Black') then
             local position = {
                 x = startPosX + ((i - 1) * offsetX * 2),
                 y = 1,
@@ -260,11 +260,11 @@ function Memory_playSong_showResult(color)
 
         -- give player a point
         Scorecard_update(color, 1)
-        
+
         -- TODO: play success sound
         MusicPlayer_announceSong(songpack.memory.pool[tonumber(Memory_firstGuess.getGMNotes())])
         broadcastToAll(LANG_MEMORY_HIT)
-        log(color)
+        -- log(color)
 
         Memory_firstGuess.editButton({index = 0, color = {r = 0, g = 1, b = 0}})
         Memory_secondGuess.editButton({index = 0, color = {r = 0, g = 1, b = 0}})

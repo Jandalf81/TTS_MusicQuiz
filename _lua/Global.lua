@@ -71,3 +71,7 @@ end
 function newRound()
     Scorecard_nextRound('Memory')
 end
+
+function Puzzle_placeTile()
+    Puzzle_spawnTiles(5)
+end
