@@ -4,6 +4,7 @@ function removeAllVectorLines()
 end
 
 function drawRectangle(topLeft, bottomRight, color, thickness, rotation)
+    -- log('drawRectangle: from ' .. topLeft.x .. ', ' .. topLeft.z .. ' to ' .. bottomRight.x .. ', ' .. bottomRight.z)
     vectorLines = Global.getVectorLines()
 
     if (vectorLines == nil) then

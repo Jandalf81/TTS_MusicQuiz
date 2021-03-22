@@ -73,5 +73,6 @@ function newRound()
 end
 
 function Puzzle_placeTile()
+    Memory_preparePlayingField()
     Puzzle_spawnTiles(5)
 end
